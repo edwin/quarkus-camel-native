@@ -1,5 +1,5 @@
 ## Stage 1 : build with maven builder image with native capabilities
-FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS build
+FROM registry.redhat.io/quarkus/mandrel-for-jdk-21-rhel8:23.1 AS build
 COPY --chown=quarkus:quarkus --chmod=0755 mvnw /code/mvnw
 COPY --chown=quarkus:quarkus .mvn /code/.mvn
 COPY --chown=quarkus:quarkus pom.xml /code/
@@ -10,7 +10,7 @@ COPY src /code/src
 RUN ./mvnw package -Dnative
 
 ## Stage 2 : create the docker final image
-FROM quay.io/quarkus/quarkus-micro-image:2.0
+FROM registry.redhat.io/ubi9/ubi-minimal:9.5
 WORKDIR /work/
 COPY --from=build /code/target/*-runner /work/application
 
